@@ -90,11 +90,12 @@ predictions = model.predict(chars, batch_size=len(chars))  # type: ignore
 
 # Define the list of label names
 DATASET_PATH = "dataset"
-LABELS = [
-    filename
-    for filename in os.listdir(DATASET_PATH)
-    if os.path.isdir(os.path.join(DATASET_PATH, filename))
-]
+LABELS = [chr for chr in "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
+# LABELS = [
+#     filename
+#     for filename in os.listdir(DATASET_PATH)
+#     if os.path.isdir(os.path.join(DATASET_PATH, filename))
+# ]
 
 # Loop over the predictions and bounding box locations together
 for pred, (x, y, w, h), idx in zip(predictions, boxes, range(len(boxes))):
@@ -102,10 +103,10 @@ for pred, (x, y, w, h), idx in zip(predictions, boxes, range(len(boxes))):
     # probability, then extract the probability and label
     ind = np.argpartition(pred, -3)[-3:]  # Get indexes of top-3 predictions
     i1, i2, i3 = ind[np.argsort(pred[ind])][::-1]  # Sort indexes of top-3 predictions
-    p1, p2, p3 = pred[i1], pred[i2], pred[i3]
+    p1, p2, p3 = f"{pred[i1]:.2%}", f"{pred[i2]:.2%}", f"{pred[i3]:.2%}"
     l1, l2, l3 = LABELS[i1], LABELS[i2], LABELS[i3]
     # Draw only top-1 prediction on the image
-    print(f"[INFO] {idx+1}: {l1} - {p1:.2%}, {l2} - {p2:.2%}, {l3} - {p3:.2%}")
+    print(f"[INFO] {idx+1:>3}: {l1:>3} - {p1:>6}, {l2:>3} - {p2:>6}, {l3:>3} - {p3:>6}")
     color = (36, 255, 12)
     cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
     cv2.putText(image, l1, (x - 5, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
