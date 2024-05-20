@@ -8,7 +8,8 @@ from ContoursHelpers import draw_contour, get_contour_precedence, sort_contours
 
 # Load the input image from disk, convert it to grayscale, and
 # blur it to reduce noise
-IMAGE_PATH = "images/screenshot1.png"
+IMAGE_PATH = "images/EMNIST.png"
+# IMAGE_PATH = "images/screenshot1.png"
 image = cv2.imread(IMAGE_PATH)
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -45,18 +46,18 @@ for cnt, (x, y, w, h) in zip(contours, boundingBoxes):
 
         # If the width is greater than the height, resize along the width dimension
         if tW > tH:
-            thresh = imutils.resize(thresh, width=96)
+            thresh = imutils.resize(thresh, width=20)
         # Otherwise, resize along the height
         else:
-            thresh = imutils.resize(thresh, height=96)
+            thresh = imutils.resize(thresh, height=20)
 
         # Re-grab the image dimensions (now that its been resized)
         # and then determine how much we need to pad the width and
-        # height such that our image will be 128x128
+        # height such that our image will be 32x32
         (tH, tW) = thresh.shape
-        dX = int(max(0, 128 - tW) / 2.0)
-        dY = int(max(0, 128 - tH) / 2.0)
-        # Pad the image and force 128x128 dimensions
+        dX = int(max(0, 32 - tW) / 2.0)
+        dY = int(max(0, 32 - tH) / 2.0)
+        # Pad the image and force 32x32 dimensions
         padded = cv2.copyMakeBorder(
             thresh,
             top=dY,
@@ -66,7 +67,7 @@ for cnt, (x, y, w, h) in zip(contours, boundingBoxes):
             borderType=cv2.BORDER_CONSTANT,
             value=255,  # White
         )
-        padded = cv2.resize(padded, (128, 128))
+        padded = cv2.resize(padded, (32, 32))
         # cv2.imshow("Test", padded)
         # cv2.waitKey(0)
 
@@ -82,7 +83,8 @@ boxes = [b for _, b in detected_chars]
 chars = np.array([c for c, _ in detected_chars], dtype="float32")
 
 # TODO: Nested model causes loading failed.
-model = saving.load_model("checkpoint\\model-EfficientNet-20240419122050.keras")
+model = saving.load_model("checkpoint\\model-EfficientNet-20240505234509.keras")
+# model = saving.load_model("checkpoint\\model-ResNet-20240506143730.keras")
 # model.summary()  # type: ignore
 
 # OCR the characters using our handwriting recognition model

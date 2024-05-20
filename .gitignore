@@ -1,6 +1,8 @@
 # Datasets' folders
 data/
 dataset/
+dataset-csv/
+logs/
 
 # Checkpoint for Model weights
 *.weights.h5
